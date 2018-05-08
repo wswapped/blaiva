@@ -47,76 +47,14 @@
 			<div id="main">
 
 				<!-- Section -->
-					<section class="wrapper style1">
-						<div class="inner">
-							<!-- 2 Columns -->
-								<div class="flex flex-2">
-									<div class="col col1">
-										<div class="image round fit">
-											<a href="generic.html" class="link"><img id="loadfeed" src="images/pic01.jpg" alt="" /></a>
-										</div>
-									</div>
-									<div class="col col2">
-										<h3>Book or text; yes you can read it</h3>
-										<p>Blaiva uses computer vision enhanced with Deep learning to help the blind read through character recognition.</p>
-										<p>We enable the blind to read like normal can and extract the world's best source of knowledge world can offer. Ranging from business card to newspaper reading and book; Blaiva is right ready to help the blind take a journey through the world</p>
-										<a href="#" class="button">Learn More</a>
-									</div>
-								</div>
-						</div>
-					</section>
-				 <!-- Section -->
-					<!-- <section class="wrapper style2">
-						<div class="inner">
-							<div class="flex flex-2">
-								<div class="col col2">
-									<h3></h3>
-
-									<p>Blaiva helps the blind to move places confidently, Blind get guidance on how to move to reach the destination without a problem along the way</p>
-									<p>Thanks to the camera and laser</p>
-									<a href="#" class="button">Learn More</a>
-								</div>
-								<div class="col col1 first">
-									<div class="image round fit">
-										<a href="generic.html" class="link"><img src="images/pic02.jpg" alt="" /></a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section> -->
-
-				<!-- Section -->
-					<!-- <section class="wrapper style1">
-						<div class="inner">
-							<header class="align-center">
-								<h2>Aliquam ipsum purus dolor</h2>
-								<p>Cras sagittis turpis sit amet est tempus, sit amet consectetur purus tincidunt.</p>
-							</header>
-							<div class="flex flex-3">
-								<div class="col align-center">
-									<div class="image round fit">
-										<img src="images/pic03.jpg" alt="" />
-									</div>
-									<p>Sed congue elit malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet. </p>
-									<a href="#" class="button">Learn More</a>
-								</div>
-								<div class="col align-center">
-									<div class="image round fit">
-										<img src="images/pic05.jpg" alt="" />
-									</div>
-									<p>Sed congue elit malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet. </p>
-									<a href="#" class="button">Learn More</a>
-								</div>
-								<div class="col align-center">
-									<div class="image round fit">
-										<img src="images/pic04.jpg" alt="" />
-									</div>
-									<p>Sed congue elit malesuada nibh, a varius odio vehicula aliquet. Aliquam consequat, nunc quis sollicitudin aliquet. </p>
-									<a href="#" class="button">Learn More</a>
-								</div>
-							</div>
-						</div>
-					</section> -->
+				<section class="wrapper style1">
+					<div class="" style="padding: 0 10%">
+						<video id="video" width="640" height="480" autoplay></video>
+						<button id="snap">Read Text</button>
+						<canvas id="canvas" width="640" height="480"></canvas
+						<img id="loadfeed" src="images/pic01.jpg" alt="" />
+					</div>
+				</section>
 
 			</div>
 
@@ -141,25 +79,63 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script type="text/javascript">
+				// Grab elements, create settings, etc.
+				var video = document.getElementById('video');
+
+				// Get access to the camera!
+				if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+				    // Not adding `{ audio: true }` since we only want video now
+				    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+				        video.src = window.URL.createObjectURL(stream);
+				        video.play();
+				    });
+				}
+
+				// Elements for taking the snapshot
+				var canvas = document.getElementById('canvas');
+				var context = canvas.getContext('2d');
+				var video = document.getElementById('video');
+
+				// Trigger photo take
+				document.getElementById("snap").addEventListener("click", function() {
+					context.drawImage(video, 0, 0, 640, 480);
+					var img = canvas.toDataURL("image/png");
+
+
+					// preparing to send
+					var formdata = new FormData();
+					var ajax = new XMLHttpRequest();
+
+					formdata.append('action', 'text');
+					formdata.append('file', img);
+					ajax.open("POST", "api/process.php");        
+					ajax.send(formdata);
+					ajax.addEventListener("load", function(){
+						// alert("Hello")
+						// setTimeout(function(){
+						// 	location.reload()
+						// }, 100)                    
+					})
+					         
+
+					//send the image for analysis
+					// $.post('api/process.php', {action:'text', file:video})
+				});
+			</script>
+			<!-- <script type="text/javascript">
 				setInterval(function(){
-					$.get('../api/getFeed.php', function(data){
+					$.get('api/getFeed.php', function(data){
 						console.log(data)
 						//get that
-						$("#loadfeed").attr('src', "../api/"+data);
+						$("#loadfeed").attr('src', "api/"+data);
 					});
 					
 
-				}, 1000)
+				}, 100)
 				// var source = new EventSource("../api/getFeed.php");
 				// source.onmessage = function(event) {
 				//     document.getElementById("result").innerHTML += event.data + "<br>";
 				// };
-			</script>
-
-			var source = new EventSource("demo_sse.php");
-source.onmessage = function(event) {
-    document.getElementById("result").innerHTML += event.data + "<br>";
-};
-
+			</script> -->
 	</body>
 </html>
