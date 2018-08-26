@@ -19,8 +19,6 @@
 			</header>
 
 		<!-- Nav -->
-		
-
 			<!-- <nav id="menu">
 
 				<ul class="links">
