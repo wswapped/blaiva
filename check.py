@@ -2,7 +2,7 @@ import cv2
 from PIL import Image
 from six import StringIO
 import requests
-
+import numpy as np
 
 cap = cv2.VideoCapture(0)
 while True:
